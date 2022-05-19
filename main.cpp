@@ -10,13 +10,18 @@ struct nod{
     nod * urm;
 };
 
+void stergePrimul(nod * & p)
+{
+    nod * t = p;
+    p = p->urm;
+    delete t;
+}
+
 int numarare(nod * p)
 {
-    int mare=1;
     int rez=0;
     nod * p1 = p;
     nod * up;
-
     while(p1->urm!=NULL)
     {
         up=p1;
@@ -24,23 +29,10 @@ int numarare(nod * p)
         int a,b;
         a=up->info;
         b=p1->info;
-        if(up->info == p1->info && p1!=up)
+        if(up->info == p1->info )
         {
-            mare++;
+            rez++;
         }
-        else
-        {
-            if(mare>rez)
-            {
-                rez=mare;
-                mare=1;
-            }
-        }
-    }
-    if(mare>rez)
-    {
-        rez=mare;
-        mare=1;
     }
     return rez;
 }
@@ -70,12 +62,13 @@ int main()
             t -> urm = q;
         }
     }
-    out<<numarare(prim);
-    /*nod *t=prim;
+    stergePrimul(prim);
+    /// afisare lista
+    nod *t=prim;
     while(t->urm!=NULL)
     {
         out<<t->info<<" ";
         t=t->urm;
-    }*/
+    }
     return 0;
 }

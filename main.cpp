@@ -5,48 +5,98 @@ using namespace std;
 ifstream in("caca.in");
 ofstream out("caca.out");
 
-struct nod{
+struct Nod
+{
     int info;
-    nod * urm;
+    Nod *leg;
 };
 
-void stergePrimul(nod * & p)
+void FInserareKX(Nod * &head, int k, int x)
 {
-    nod * t = p;
-    p = p->urm;
-    delete t;
-}
-
-int numarare(nod * p)
-{
-    int rez=0;
-    nod * p1 = p;
-    nod * up;
-    while(p1->urm!=NULL)
+    if(head==NULL)
     {
-        up=p1;
-        p1=p1 -> urm;
-        int a,b;
-        a=up->info;
-        b=p1->info;
-        if(up->info == p1->info )
+
+    }
+    if(k<=1)
+    {
+        Nod * t = new Nod;
+        t->info=x;
+        t->leg=head;
+        head=t;
+        return;
+    }
+    int nr=2;
+    Nod * p1 = head;
+    while(p1->leg!=NULL)
+    {
+        if(k==nr)
         {
-            rez++;
+            Nod * t = new  Nod;
+            t->info = x;
+            t->leg=p1->leg;
+            p1->leg=t;
+            p1=p1 -> leg;
+        }
+        p1=p1 -> leg;
+        nr++;
+    }
+    if(nr<=k)
+    {
+        k=nr-1;
+        nr=2;
+        Nod * p1 = head;
+        while(p1->leg!=NULL)
+        {
+            if(k==nr)
+            {
+                Nod * t = new  Nod;
+                t->info = x;
+                t->leg=p1->leg;
+                p1->leg=t;
+                p1=p1 -> leg;
+            }
+            p1=p1 -> leg;
+            nr++;
         }
     }
-    return rez;
+}
+
+void FAdaugaInainte(Nod * &head)
+{
+    Nod * p1 = head;
+    if(p1->info%2==1)
+    {
+        Nod * t = new Nod;
+        t -> info = p1->info*2;
+        t -> leg = head;
+        head = t;
+    }
+    while(p1->leg!=NULL)
+    {
+        int a=p1->leg->info;
+        if((p1->leg)->info%2==1)
+        {
+            Nod * t = new  Nod;
+            t->info = p1->leg->info*2;
+            t->leg=p1->leg;
+            p1->leg=t;
+            p1=p1 -> leg;
+        }
+        p1=p1 -> leg;
+    }
 }
 
 int main()
 {
-    nod * prim = NULL;
-    int x;
+    Nod * prim = NULL;
+    int x,k,nr;
+    in>>k>>x;
     while(in)
     {
-        in>>x;
-        nod * q = new nod;
-        q -> info = x;
-        q -> urm = NULL;
+        in>>nr;
+        Nod * q = new Nod;
+        q -> info = nr;
+        q -> leg = NULL;
         if(prim == NULL)
         {
             prim = q;
@@ -54,21 +104,20 @@ int main()
         else
         {
 
-            nod * t = prim;
-            while(t -> urm != NULL)
+            Nod * t = prim;
+            while(t -> leg != NULL)
             {
-                t = t -> urm;
+                t = t -> leg;
             }
-            t -> urm = q;
+            t -> leg = q;
         }
     }
-    stergePrimul(prim);
-    /// afisare lista
-    nod *t=prim;
-    while(t->urm!=NULL)
+    FInserareKX(prim,k,x);
+    Nod *t=prim;
+    while(t->leg!=NULL)
     {
         out<<t->info<<" ";
-        t=t->urm;
+        t=t->leg;
     }
     return 0;
 }

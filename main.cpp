@@ -1,123 +1,206 @@
-#include <fstream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-ifstream in("caca.in");
-ofstream out("caca.out");
-
-struct Nod
-{
-    int info;
-    Nod *leg;
+struct Catalog{
+    string nume,prenume;
+    int nrom,nmate,ninfo;
+    Catalog * urm;
 };
 
-void FInserareKX(Nod * &head, int k, int x)
-{
-    if(head==NULL)
-    {
+int n;
 
-    }
-    if(k<=1)
+///1/6
+void creare(Catalog*& f)
+{
+    string a1,b1;
+    int a,b,c;
+    Catalog* p = new Catalog;
+    cin>>a1>>b1>>a>>b>>c;
+    p->nume=a1;p->prenume=b1;p->nrom=a;p->nmate=b;p->ninfo=c;
+    f = p;
+    for (int i = 0; i < n-1; i++)
     {
-        Nod * t = new Nod;
-        t->info=x;
-        t->leg=head;
-        head=t;
-        return;
+        cin>>a1>>b1>>a>>b>>c;
+        Catalog* n = new Catalog;
+        n->nume= a1;n->prenume=b1;n->nrom=a;n->nmate=b;n->ninfo=c;
+        p->urm = n;
+        p = n;
     }
-    int nr=2;
-    Nod * p1 = head;
-    while(p1->leg!=NULL)
+    p->urm = NULL;
+}
+
+///2/6
+void afisare(Catalog* n)
+{
+    cout<<'\n';
+    while(n!=NULL)
     {
-        if(k==nr)
+        cout<<n->nume<<' '<<n->prenume<<' '<<n->nrom<<' '<<n->nmate<<' '<<n->ninfo<<'\n';
+        n=n->urm;
+    }
+    cout<<'\n';
+}
+
+///3/6
+void verificare(Catalog * prim)
+{
+    int x;
+    cin>>x;
+    while(prim!=NULL && prim->urm!=NULL)
+    {
+        if(prim->ninfo==x || prim->nrom==x || prim->nmate==x)
         {
-            Nod * t = new  Nod;
-            t->info = x;
-            t->leg=p1->leg;
-            p1->leg=t;
-            p1=p1 -> leg;
+            cout<<prim->nume<<' '<<prim->prenume<<" are nota "<<x<<" in catalog."<<'\n';
         }
-        p1=p1 -> leg;
-        nr++;
+        prim=prim->urm;
     }
-    if(nr<=k)
+    if(prim->ninfo==x || prim->nrom==x || prim->nmate==x)
     {
-        k=nr-1;
-        nr=2;
-        Nod * p1 = head;
-        while(p1->leg!=NULL)
+        cout<<prim->nume<<' '<<prim->prenume<<" are nota "<<x<<" in catalog."<<'\n';
+    }
+}
+
+///4/6
+void adaugare(Catalog *& prim)
+{
+    string a1,b1;
+    int a,b,c;
+    cin>>a1>>b1>>a>>b>>c;
+    Catalog *x=new Catalog;
+    x->nume=a1;
+    x->prenume=b1;
+    x->nrom=a;
+    x->nmate=b;
+    x->ninfo=c;
+    x->urm=NULL;
+    if(prim==NULL)
+    {
+        prim=x;
+    }
+    else
+    {
+        Catalog *y=prim;
+        while(y->urm!=NULL)
+            y=y->urm;
+        y->urm=x;
+    }
+}
+
+///5/6
+void stergere(Catalog *& prim)
+{
+    int poz;
+    cin>>poz;
+    if(poz==1)
+    {
+        ///pozitia 1
+        Catalog *aux=prim;
+        prim=prim->urm;
+        delete aux;
+    }
+    else
+    {
+        Catalog* p=new Catalog;
+        p=prim;
+        int i=1;
+        while(p!=NULL && p->urm!=NULL && poz>i+1)
         {
-            if(k==nr)
-            {
-                Nod * t = new  Nod;
-                t->info = x;
-                t->leg=p1->leg;
-                p1->leg=t;
-                p1=p1 -> leg;
-            }
-            p1=p1 -> leg;
-            nr++;
+            p=p->urm;
+            i++;
+        }
+        ///caz cand este ultimul element
+        if(p->urm->urm==NULL)
+        {
+            Catalog* aux=p->urm;
+            delete aux;
+            p->urm=NULL;
+        }
+        ///caz cand este element random
+        else
+        {
+            Catalog* aux=p->urm;
+            delete aux;
+            p->urm=p->urm->urm;
         }
     }
 }
 
-void FAdaugaInainte(Nod * &head)
+///6/6
+void inserare(Catalog*& prim)
 {
-    Nod * p1 = head;
-    if(p1->info%2==1)
+    string a1, b1, x, y;
+    int a, b, c;
+    Catalog* n = new Catalog;
+    Catalog* p = prim;
+    cin >> a1 >> b1 >> a >> b >> c;  
+    n->nume = a1;n->prenume = b1;n->nrom = a;n->nmate = b;n->ninfo = c;
+    x = n->nume;
+    n->urm = NULL;
+    bool d = false;
+    while (p->urm != NULL && d==false)
     {
-        Nod * t = new Nod;
-        t -> info = p1->info*2;
-        t -> leg = head;
-        head = t;
-    }
-    while(p1->leg!=NULL)
-    {
-        int a=p1->leg->info;
-        if((p1->leg)->info%2==1)
+        y = p->urm->nume;
+        if (x<y)
         {
-            Nod * t = new  Nod;
-            t->info = p1->leg->info*2;
-            t->leg=p1->leg;
-            p1->leg=t;
-            p1=p1 -> leg;
+            if (p->urm != NULL)
+            {
+                n->urm = p->urm;
+                p->urm = n;
+            }
+            d = true;
         }
-        p1=p1 -> leg;
+        p = p->urm;
     }
 }
 
 int main()
 {
-    Nod * prim = NULL;
-    int x,k,nr;
-    in>>k>>x;
-    while(in)
+    bool endapp=false;
+    Catalog* lista=new Catalog;
+    cout<<"Introduceti numarul de elevi pusi in catalog:"<<'\n';
+    cin>>n;
+    cout<<"Introduceti datele elevilor in forma:Nume,Prenume,nota romana,nota matematica,nota informatica:"<<'\n';
+    creare(lista);
+    cout<<"Folositi help pentru o lista cu comenzi!"<<'\n';
+    string reading;
+    while(endapp==false)
     {
-        in>>nr;
-        Nod * q = new Nod;
-        q -> info = nr;
-        q -> leg = NULL;
-        if(prim == NULL)
+        cin>>reading;
+        if(reading=="help")
         {
-            prim = q;
+            cout<<"Pentru afisarea catalogului folositi -> afisare"<<'\n'<<"Pentru verificarea elevilor cu o anumita nota folositi -> verificare"<<'\n';
+            cout<<"Pentru adaugarea la finalul catalogului folositi -> adaugare"<<'\n'<<"Pentru stergerea unei anumite pozitii folositi -> stergere"<<'\n';
+            cout<<"Pentru inserare in catalog in mod alfabetic folositi -> inserare"<<'\n'<<"Pentru terminarea programului folositi -> iesi"<<'\n';
         }
-        else
+        if(reading=="afisare")
         {
-
-            Nod * t = prim;
-            while(t -> leg != NULL)
-            {
-                t = t -> leg;
-            }
-            t -> leg = q;
+            afisare(lista);
         }
-    }
-    FInserareKX(prim,k,x);
-    Nod *t=prim;
-    while(t->leg!=NULL)
-    {
-        out<<t->info<<" ";
-        t=t->leg;
+        if(reading=="verificare")
+        {
+            cout<<"Introduceti nota care trebuie verificata:";
+            verificare(lista);
+        }
+        if(reading=="adaugare")
+        {
+            cout<<"Introduceti datele unui elev nou:";
+            adaugare(lista);
+        }
+        if(reading=="stergere")
+        {
+            cout<<"Introduceti pozitia care trebuie stearsa:";
+            stergere(lista);
+        }
+        if(reading=="inserare")
+        {
+            cout<<"Introduceti datele unui elev nou:";
+            inserare(lista);
+        }
+        if(reading=="iesi")
+        {
+            endapp=true;
+        }
     }
     return 0;
 }
